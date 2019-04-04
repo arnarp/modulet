@@ -44,10 +44,18 @@ export async function modulet(source: string) {
         if (code == undefined) {
           return
         }
-        const importRegex = /import\s(\w+)\sfrom\s'(.+\.css)'/gm
-        let match: RegExpExecArray | null = null
         const matches: Match[] = []
+        let match: RegExpExecArray | null = null
+        const importRegex = /import\s(\w+)\sfrom\s'(.+\.css)'/gm
         while ((match = importRegex.exec(code))) {
+          matches.push({
+            match: match[0],
+            var: match[1],
+            path: match[2]
+          })
+        }
+        const requireRegex = /var\s(\w+)\s=\srequire\('(.+\.css)'\)/gm
+        while ((match = requireRegex.exec(code))) {
           matches.push({
             match: match[0],
             var: match[1],
