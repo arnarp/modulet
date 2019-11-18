@@ -1,6 +1,5 @@
-import { lstat, readdir } from './async-fs'
-
 import path from 'path'
+import { lstat, readdir } from './async-fs'
 
 export type File = { name: string; abspath: string }
 

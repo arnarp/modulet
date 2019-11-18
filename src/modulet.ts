@@ -1,10 +1,9 @@
-import { File, walk } from './walk'
+import path from 'path'
 import { readFile, writeFile } from './async-fs'
-
 import { generateClass } from './generate-class'
 import { getDistinctCssClasses } from './get-distinct-css-classes'
-import path from 'path'
 import { runPromisesSequentally } from './run-promises-sequentally'
+import { File, walk } from './walk'
 
 type Match = {
   match: string
@@ -75,12 +74,14 @@ export async function modulet(source: string) {
   await runPromisesSequentally(
     cssFiles.map(async f => {
       let code = contents.get(f.css.abspath) || ''
-      const classes = Array.from(getDistinctCssClasses(code)).map(i => {
-        return {
-          class: i,
-          id: generateClass()
-        }
-      })
+      const classes = Array.from(getDistinctCssClasses(code))
+        .map(i => {
+          return {
+            class: i,
+            id: generateClass()
+          }
+        })
+        .sort((a, b) => b.class.length - a.class.length)
       classes.forEach(c => {
         code = code.replace(new RegExp(`\\.${c.class}`, 'g'), `.${c.id}`)
       })
